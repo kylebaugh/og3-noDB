@@ -1,12 +1,12 @@
 
 
-const AddButton = () => {
+const AddButton = ({addClick}) => {
 
     return (
         <tr>
             <td></td>
             <td colSpan='4'>
-                <button>Add</button>
+                <button onClick={addClick}>Add</button>
             </td>
         </tr>
     )
