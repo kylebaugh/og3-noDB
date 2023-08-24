@@ -4,10 +4,11 @@ import Hours from './Hours.jsx';
 import Rate from './Rate.jsx';
 import formatCurrency from '../utils/formatCurrency.js';
 import { useState } from 'react';
+import axios from 'axios'
 
 
 
-const TableRow = ({initialInvoiceData, initialIsEditing, deleteFunc}) => {
+const TableRow = ({initialInvoiceData, initialIsEditing, deleteFunc, id}) => {
     // const {rate, hours} = initialInvoiceData
 
     const [editMode, setIsEditing] = useState(initialIsEditing)
@@ -16,7 +17,23 @@ const TableRow = ({initialInvoiceData, initialIsEditing, deleteFunc}) => {
     const [hours, setHours] = useState(initialInvoiceData.hours)
 
     const changeEditMode = () => setIsEditing(true)
-    const changeNormalMode = () => setIsEditing(false)
+    const changeNormalMode = async () => {
+
+        let bodyObj = {
+            description,
+            rate,
+            hours
+        }
+
+        const {data} = await axios.put(`/editInvoice/${id}`, bodyObj)
+
+        if(!data.error){
+            setIsEditing(false)
+        }else{
+            alert('Something broke, try again!')
+        }
+
+    }
 
 
 

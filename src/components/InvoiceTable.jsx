@@ -8,38 +8,46 @@ import TableHeader from './TableHeader';
 import AddButton from './AddButton';
 import TableRow from './TableRow';
 import {useState} from 'react'
+import axios from 'axios'
 
-let globalId = 5
+// let globalId = 5
 
 const InvoiceTable = ({initialInvoiceList}) => {
 
     const [currentList, setCurrentList] = useState(initialInvoiceList)
 
-    const addRow = () => {
+    const addRow = async () => {
+
+        let {data} = await axios.post('/addInvoice', {description: 'Description goes here'})
+
+        setCurrentList([...currentList, data])
+
         // get a copy of the current list
         // create a new "blank" object for new row
         // push new object into my copied list
         // update list state with the new version of the list
 
-        const newInvoiceList = [...currentList]
-        const newRow = {
-            id: globalId,
-            description: 'Description',
-            rate: '',
-            hours: ''
-        }
+        // const newInvoiceList = [...currentList]
+        // const newRow = {
+        //     id: globalId,
+        //     description: 'Description',
+        //     rate: '',
+        //     hours: ''
+        // }
 
-        newInvoiceList.push(newRow)
-
-        setCurrentList(newInvoiceList)
-
-        globalId++
+        // newInvoiceList.push(newRow)
+        // globalId++
     }
 
-    const deleteRow = (id) => {
-        const filteredList = currentList.filter(el => el.id !== id)
+    const deleteRow = async (id) => {
 
-        setCurrentList(filteredList)
+        const {data} = await axios.delete(`/removeInvoice/${id}`)
+
+        if(!data.error){
+            const filteredList = currentList.filter(el => el.id !== id)
+            setCurrentList(filteredList)
+        }
+
     }
 
 
@@ -50,6 +58,7 @@ const InvoiceTable = ({initialInvoiceList}) => {
         return (
             <TableRow
                 key={id}
+                id={id}
                 initialInvoiceData={{description: description, rate: rate, hours: hours}}
                 initialIsEditing={false}
                 deleteFunc={() => deleteRow(id)}
